@@ -17,4 +17,6 @@ public class AsiKaydi
 
     [StringLength(500)]
     public string? Notlar { get; set; }
+    public int? AsiSablonuId { get; set; }
+    public AsiSablonu? AsiSablonu { get; set; }
 }

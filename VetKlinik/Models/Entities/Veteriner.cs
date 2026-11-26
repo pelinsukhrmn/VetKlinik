@@ -20,4 +20,5 @@ public class Veteriner
     public ICollection<Hizmet> Hizmetler { get; set; } = new List<Hizmet>();
     public ICollection<VeterinerMusaitlik> Musaitlikler { get; set; } = new List<VeterinerMusaitlik>();
     public ICollection<Randevu> Randevular { get; set; } = new List<Randevu>();
+    public ICollection<VeterinerIzin> Izinler { get; set; } = new List<VeterinerIzin>();
 }

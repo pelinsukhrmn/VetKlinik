@@ -24,6 +24,10 @@ erDiagram
     Veteriner ||--o{ Randevu : "randevu"
     Hizmet ||--o{ Randevu : "randevu"
     Randevu ||--o| MuayeneNotu : "not"
+    Veteriner ||--o{ VeterinerIzin : "izin"
+    EvcilHayvan ||--o{ KiloOlcumu : "kilo"
+    AsiSablonu |o--o{ AsiKaydi : "sablon"
+    Randevu ||--o{ RandevuDurumGecmisi : "gecmis"
 
     ApplicationUser { string Id PK
         string Ad
@@ -68,6 +72,24 @@ erDiagram
         int Gun
         time AcilisSaati
         time KapanisSaati }
+    AsiSablonu { int Id PK
+        string AsiAdi
+        string Tur
+        int TekrarAraligiGun }
+    VeterinerIzin { int Id PK
+        int VeterinerId FK
+        date BaslangicTarihi
+        date BitisTarihi }
+    KiloOlcumu { int Id PK
+        int EvcilHayvanId FK
+        date OlcumTarihi
+        decimal Kilo }
+    RandevuDurumGecmisi { int Id PK
+        int RandevuId FK
+        string EskiDurum
+        string YeniDurum
+        string DegistirenKullaniciId FK
+        datetime Tarih }
 ```
 
 Tek klinik üzerinde çalışılmaktadır. Randevu, oluşturulduğu andaki ücret ve süreyi kendi içinde saklar; böylece hizmet fiyatı değişse de geçmiş kayıtlar ve ciro raporu doğru kalır.

@@ -264,6 +264,9 @@ namespace VetKlinik.Data.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("AsiSablonuId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("EvcilHayvanId")
                         .HasColumnType("INTEGER");
 
@@ -279,9 +282,45 @@ namespace VetKlinik.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AsiSablonuId");
+
                     b.HasIndex("EvcilHayvanId");
 
                     b.ToTable("AsiKayitlari");
+                });
+
+            modelBuilder.Entity("VetKlinik.Models.Entities.AsiSablonu", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Aciklama")
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("AktifMi")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("AsiAdi")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("TekrarAraligiGun")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Tur")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Tur", "AsiAdi")
+                        .IsUnique();
+
+                    b.ToTable("AsiSablonlari");
                 });
 
             modelBuilder.Entity("VetKlinik.Models.Entities.EvcilHayvan", b =>
@@ -352,6 +391,33 @@ namespace VetKlinik.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Hizmetler");
+                });
+
+            modelBuilder.Entity("VetKlinik.Models.Entities.KiloOlcumu", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("EvcilHayvanId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double>("Kilo")
+                        .HasColumnType("REAL");
+
+                    b.Property<DateOnly>("OlcumTarihi")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("RandevuId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EvcilHayvanId");
+
+                    b.HasIndex("RandevuId");
+
+                    b.ToTable("KiloOlcumleri");
                 });
 
             modelBuilder.Entity("VetKlinik.Models.Entities.KlinikCalismaSaati", b =>
@@ -463,6 +529,44 @@ namespace VetKlinik.Data.Migrations
                     b.ToTable("Randevular");
                 });
 
+            modelBuilder.Entity("VetKlinik.Models.Entities.RandevuDurumGecmisi", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Aciklama")
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DegistirenKullaniciId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("EskiDurum")
+                        .HasMaxLength(20)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("RandevuId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("Tarih")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("YeniDurum")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DegistirenKullaniciId");
+
+                    b.HasIndex("RandevuId");
+
+                    b.ToTable("RandevuDurumGecmisleri");
+                });
+
             modelBuilder.Entity("VetKlinik.Models.Entities.UzmanlikAlani", b =>
                 {
                     b.Property<int>("Id")
@@ -506,6 +610,32 @@ namespace VetKlinik.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("Veterinerler");
+                });
+
+            modelBuilder.Entity("VetKlinik.Models.Entities.VeterinerIzin", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Aciklama")
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateOnly>("BaslangicTarihi")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateOnly>("BitisTarihi")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("VeterinerId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VeterinerId");
+
+                    b.ToTable("VeterinerIzinleri");
                 });
 
             modelBuilder.Entity("VetKlinik.Models.Entities.VeterinerMusaitlik", b =>
@@ -616,11 +746,18 @@ namespace VetKlinik.Data.Migrations
 
             modelBuilder.Entity("VetKlinik.Models.Entities.AsiKaydi", b =>
                 {
+                    b.HasOne("VetKlinik.Models.Entities.AsiSablonu", "AsiSablonu")
+                        .WithMany("AsiKayitlari")
+                        .HasForeignKey("AsiSablonuId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("VetKlinik.Models.Entities.EvcilHayvan", "EvcilHayvan")
                         .WithMany("AsiKayitlari")
                         .HasForeignKey("EvcilHayvanId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("AsiSablonu");
 
                     b.Navigation("EvcilHayvan");
                 });
@@ -634,6 +771,24 @@ namespace VetKlinik.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Sahip");
+                });
+
+            modelBuilder.Entity("VetKlinik.Models.Entities.KiloOlcumu", b =>
+                {
+                    b.HasOne("VetKlinik.Models.Entities.EvcilHayvan", "EvcilHayvan")
+                        .WithMany("KiloOlcumleri")
+                        .HasForeignKey("EvcilHayvanId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("VetKlinik.Models.Entities.Randevu", "Randevu")
+                        .WithMany()
+                        .HasForeignKey("RandevuId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("EvcilHayvan");
+
+                    b.Navigation("Randevu");
                 });
 
             modelBuilder.Entity("VetKlinik.Models.Entities.MuayeneNotu", b =>
@@ -674,6 +829,25 @@ namespace VetKlinik.Data.Migrations
                     b.Navigation("Veteriner");
                 });
 
+            modelBuilder.Entity("VetKlinik.Models.Entities.RandevuDurumGecmisi", b =>
+                {
+                    b.HasOne("VetKlinik.Models.Entities.ApplicationUser", "DegistirenKullanici")
+                        .WithMany()
+                        .HasForeignKey("DegistirenKullaniciId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("VetKlinik.Models.Entities.Randevu", "Randevu")
+                        .WithMany("DurumGecmisi")
+                        .HasForeignKey("RandevuId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("DegistirenKullanici");
+
+                    b.Navigation("Randevu");
+                });
+
             modelBuilder.Entity("VetKlinik.Models.Entities.Veteriner", b =>
                 {
                     b.HasOne("VetKlinik.Models.Entities.ApplicationUser", "Kullanici")
@@ -683,6 +857,17 @@ namespace VetKlinik.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Kullanici");
+                });
+
+            modelBuilder.Entity("VetKlinik.Models.Entities.VeterinerIzin", b =>
+                {
+                    b.HasOne("VetKlinik.Models.Entities.Veteriner", "Veteriner")
+                        .WithMany("Izinler")
+                        .HasForeignKey("VeterinerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Veteriner");
                 });
 
             modelBuilder.Entity("VetKlinik.Models.Entities.VeterinerMusaitlik", b =>
@@ -701,9 +886,16 @@ namespace VetKlinik.Data.Migrations
                     b.Navigation("EvcilHayvanlar");
                 });
 
+            modelBuilder.Entity("VetKlinik.Models.Entities.AsiSablonu", b =>
+                {
+                    b.Navigation("AsiKayitlari");
+                });
+
             modelBuilder.Entity("VetKlinik.Models.Entities.EvcilHayvan", b =>
                 {
                     b.Navigation("AsiKayitlari");
+
+                    b.Navigation("KiloOlcumleri");
 
                     b.Navigation("Randevular");
                 });
@@ -715,11 +907,15 @@ namespace VetKlinik.Data.Migrations
 
             modelBuilder.Entity("VetKlinik.Models.Entities.Randevu", b =>
                 {
+                    b.Navigation("DurumGecmisi");
+
                     b.Navigation("MuayeneNotu");
                 });
 
             modelBuilder.Entity("VetKlinik.Models.Entities.Veteriner", b =>
                 {
+                    b.Navigation("Izinler");
+
                     b.Navigation("Musaitlikler");
 
                     b.Navigation("Randevular");

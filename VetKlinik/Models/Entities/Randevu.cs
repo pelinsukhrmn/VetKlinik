@@ -34,4 +34,6 @@ public class Randevu
     public DateTime OlusturulmaTarihi { get; set; } = DateTime.Now;
 
     public MuayeneNotu? MuayeneNotu { get; set; }
+    
+    public ICollection<RandevuDurumGecmisi> DurumGecmisi { get; set; } = new List<RandevuDurumGecmisi>();
 }

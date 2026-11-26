@@ -29,4 +29,5 @@ public class EvcilHayvan
 
     public ICollection<AsiKaydi> AsiKayitlari { get; set; } = new List<AsiKaydi>();
     public ICollection<Randevu> Randevular { get; set; } = new List<Randevu>();
+    public ICollection<KiloOlcumu> KiloOlcumleri { get; set; } = new List<KiloOlcumu>();
 }

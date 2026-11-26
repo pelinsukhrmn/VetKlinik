@@ -1,0 +1,55 @@
+@page
+@model VetKlinik.Areas.Identity.Pages.Account.RegisterModel
+@{
+    ViewData["Title"] = "Üye Ol";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-7 col-lg-5">
+        <h1 class="h3 mb-3">Üye Ol</h1>
+        <p class="text-muted">Evcil hayvanlarınızı kaydetmek ve randevu almak için hesap oluşturun.</p>
+
+        <form method="post" asp-route-returnUrl="@Model.ReturnUrl">
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+            <div class="row g-2">
+                <div class="col-sm-6 form-floating mb-3">
+                    <input asp-for="Input.Ad" class="form-control" placeholder="Ad" autocomplete="given-name" />
+                    <label asp-for="Input.Ad"></label>
+                    <span asp-validation-for="Input.Ad" class="text-danger"></span>
+                </div>
+                <div class="col-sm-6 form-floating mb-3">
+                    <input asp-for="Input.Soyad" class="form-control" placeholder="Soyad" autocomplete="family-name" />
+                    <label asp-for="Input.Soyad"></label>
+                    <span asp-validation-for="Input.Soyad" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Email" class="form-control" placeholder="ornek@mail.com" autocomplete="username" />
+                <label asp-for="Input.Email"></label>
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Password" class="form-control" placeholder="Şifre" autocomplete="new-password" />
+                <label asp-for="Input.Password"></label>
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="Input.ConfirmPassword" class="form-control" placeholder="Şifre (tekrar)" autocomplete="new-password" />
+                <label asp-for="Input.ConfirmPassword"></label>
+                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+            </div>
+
+            <p class="small text-muted">Şifre en az 6 karakter olmalı; büyük harf, küçük harf ve rakam içermelidir.</p>
+
+            <button type="submit" class="btn btn-primary w-100">Üye Ol</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

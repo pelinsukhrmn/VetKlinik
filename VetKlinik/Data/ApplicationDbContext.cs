@@ -20,6 +20,10 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<AsiKaydi> AsiKayitlari => Set<AsiKaydi>();
     public DbSet<Randevu> Randevular => Set<Randevu>();
     public DbSet<MuayeneNotu> MuayeneNotlari => Set<MuayeneNotu>();
+    public DbSet<AsiSablonu> AsiSablonlari => Set<AsiSablonu>();
+    public DbSet<VeterinerIzin> VeterinerIzinleri => Set<VeterinerIzin>();
+    public DbSet<KiloOlcumu> KiloOlcumleri => Set<KiloOlcumu>();
+    public DbSet<RandevuDurumGecmisi> RandevuDurumGecmisleri => Set<RandevuDurumGecmisi>();
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
@@ -104,6 +108,53 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
             // Çakışma kontrolü sorgusu bu iki alana göre arayacak
             e.HasIndex(r => new { r.VeterinerId, r.Baslangic });
+        });
+                builder.Entity<AsiSablonu>(e =>
+        {
+            e.Property(s => s.Tur).HasConversion<string>().HasMaxLength(20);
+            // Aynı tür için aynı adla iki şablon olamaz
+            e.HasIndex(s => new { s.Tur, s.AsiAdi }).IsUnique();
+        });
+
+        builder.Entity<AsiKaydi>()
+            .HasOne(a => a.AsiSablonu)
+            .WithMany(s => s.AsiKayitlari)
+            .HasForeignKey(a => a.AsiSablonuId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        builder.Entity<VeterinerIzin>()
+            .HasOne(i => i.Veteriner)
+            .WithMany(v => v.Izinler)
+            .HasForeignKey(i => i.VeterinerId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<KiloOlcumu>(e =>
+        {
+            e.HasOne(k => k.EvcilHayvan)
+             .WithMany(h => h.KiloOlcumleri)
+             .HasForeignKey(k => k.EvcilHayvanId)
+             .OnDelete(DeleteBehavior.Cascade);
+
+            e.HasOne(k => k.Randevu)
+             .WithMany()
+             .HasForeignKey(k => k.RandevuId)
+             .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        builder.Entity<RandevuDurumGecmisi>(e =>
+        {
+            e.Property(g => g.EskiDurum).HasConversion<string>().HasMaxLength(20);
+            e.Property(g => g.YeniDurum).HasConversion<string>().HasMaxLength(20);
+
+            e.HasOne(g => g.Randevu)
+             .WithMany(r => r.DurumGecmisi)
+             .HasForeignKey(g => g.RandevuId)
+             .OnDelete(DeleteBehavior.Cascade);
+
+            e.HasOne(g => g.DegistirenKullanici)
+             .WithMany()
+             .HasForeignKey(g => g.DegistirenKullaniciId)
+             .OnDelete(DeleteBehavior.Restrict);
         });
     }
 }
